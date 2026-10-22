@@ -3,6 +3,7 @@ import {
   Activity, AlertTriangle, ArrowDownRight, ArrowUpRight, Battery, BellRing,
   CheckCircle2, ChevronRight, Clock3, HeartPulse, LockKeyhole, LogOut,
   MapPinned, Plus, RefreshCw, ShieldCheck, Smartphone, Watch, XCircle,
+  Archive, Pencil, RotateCcw, Save, UserRound, X,
 } from 'lucide-react';
 import { apiRequest } from './lib/api.js';
 import { isSupabaseConfigured, supabase } from './lib/supabase.js';
@@ -116,8 +117,17 @@ function Dashboard({ session }) {
   const [error, setError] = useState('');
   const [notice, setNotice] = useState(null);
   const [newPatientName, setNewPatientName] = useState('');
+  const [newPatientRelationship, setNewPatientRelationship] = useState('');
+  const [newPatientDob, setNewPatientDob] = useState('');
   const [addingPatient, setAddingPatient] = useState(false);
   const [approvingId, setApprovingId] = useState('');
+  const [showArchivedPatients, setShowArchivedPatients] = useState(false);
+  const [editingPatientId, setEditingPatientId] = useState('');
+  const [patientDraft, setPatientDraft] = useState({ display_name: '', relationship: '', date_of_birth: '' });
+  const [savingPatient, setSavingPatient] = useState(false);
+  const [caregiverProfile, setCaregiverProfile] = useState({ full_name: session.user?.user_metadata?.full_name || '', phone: '', relationship_to_patient: '' });
+  const [profileEmail, setProfileEmail] = useState(session.user?.email || '');
+  const [savingProfile, setSavingProfile] = useState(false);
 
   const loadDashboard = useCallback(async (quiet = false) => {
     if (quiet) setRefreshing(true); else setLoading(true);
@@ -132,6 +142,21 @@ function Dashboard({ session }) {
 
   useEffect(() => { loadDashboard(); }, [loadDashboard]);
 
+  useEffect(() => {
+    let active = true;
+    apiRequest('caregiver-profile', { token: session.access_token }).then((result) => {
+      if (!active) return;
+      setCaregiverProfile({ full_name: result.profile?.full_name || session.user?.user_metadata?.full_name || '', phone: result.profile?.phone || '', relationship_to_patient: result.profile?.relationship_to_patient || '' });
+      setProfileEmail(result.email || session.user?.email || '');
+    }).catch((e) => {
+      if (active) setNotice({ kind: 'error', text: e.message || 'โหลดโปรไฟล์ผู้ดูแลไม่สำเร็จ หากเพิ่งอัปเดตระบบให้รัน migration ก่อน' });
+    });
+    return () => { active = false; };
+  }, [session.access_token, session.user?.email, session.user?.user_metadata?.full_name]);
+
+  const activePatients = useMemo(() => data.patients.filter((patient) => !patient.is_archived), [data.patients]);
+  const archivedPatients = useMemo(() => data.patients.filter((patient) => Boolean(patient.is_archived)), [data.patients]);
+  const visiblePatients = showArchivedPatients ? archivedPatients : activePatients;
   const patientNames = useMemo(() => new Map(data.patients.map((p) => [p.id, p.display_name])), [data.patients]);
   const onlineDevices = data.devices.filter((device) => device.status === 'online').length;
   const unacknowledgedAlerts = data.alerts.filter((alert) => !alert.acknowledged_at).length;
@@ -141,12 +166,55 @@ function Dashboard({ session }) {
     event.preventDefault();
     setAddingPatient(true); setNotice(null);
     try {
-      await apiRequest('create-patient', { token: session.access_token, method: 'POST', body: { display_name: newPatientName } });
+      await apiRequest('create-patient', { token: session.access_token, method: 'POST', body: { display_name: newPatientName, relationship: newPatientRelationship, date_of_birth: newPatientDob } });
       setNewPatientName('');
-      setNotice({ kind: 'success', text: 'เพิ่มข้อมูลผู้ป่วยแล้ว ต่อไปให้ลงทะเบียนอุปกรณ์ผ่านระบบ Device Gateway' });
+      setNewPatientRelationship('');
+      setNewPatientDob('');
+      setNotice({ kind: 'success', text: 'เพิ่มโปรไฟล์ผู้ป่วยแล้ว' });
       await loadDashboard(true);
     } catch (e) { setNotice({ kind: 'error', text: e.message }); }
     finally { setAddingPatient(false); }
+  }
+
+  async function saveCaregiverProfile(event) {
+    event.preventDefault(); setSavingProfile(true); setNotice(null);
+    try {
+      const result = await apiRequest('caregiver-profile', { token: session.access_token, method: 'PUT', body: caregiverProfile });
+      setCaregiverProfile({ full_name: result.profile.full_name || '', phone: result.profile.phone || '', relationship_to_patient: result.profile.relationship_to_patient || '' });
+      setProfileEmail(result.email || profileEmail);
+      await supabase.auth.updateUser({ data: { full_name: result.profile.full_name } }).catch(() => {});
+      setNotice({ kind: 'success', text: 'บันทึกโปรไฟล์ผู้ดูแลแล้ว' });
+    } catch (e) { setNotice({ kind: 'error', text: e.message || 'บันทึกโปรไฟล์ผู้ดูแลไม่สำเร็จ' }); }
+    finally { setSavingProfile(false); }
+  }
+
+  function startEditingPatient(patient) {
+    setEditingPatientId(patient.id);
+    setPatientDraft({ display_name: patient.display_name || '', relationship: patient.relationship || '', date_of_birth: patient.date_of_birth || '' });
+  }
+
+  async function savePatient(event) {
+    event.preventDefault(); setSavingPatient(true); setNotice(null);
+    try {
+      await apiRequest('update-patient', { token: session.access_token, method: 'PATCH', body: { patient_id: editingPatientId, ...patientDraft } });
+      setEditingPatientId('');
+      setNotice({ kind: 'success', text: 'บันทึกข้อมูลผู้ป่วยแล้ว' });
+      await loadDashboard(true);
+    } catch (e) { setNotice({ kind: 'error', text: e.message || 'แก้ไขข้อมูลผู้ป่วยไม่สำเร็จ' }); }
+    finally { setSavingPatient(false); }
+  }
+
+  async function toggleArchivePatient(patient) {
+    const archive = !patient.is_archived;
+    const message = archive ? `เก็บโปรไฟล์ "${patient.display_name}" เข้าคลังหรือไม่? ประวัติจะยังถูกเก็บไว้` : `กู้คืนโปรไฟล์ "${patient.display_name}" หรือไม่?`;
+    if (!window.confirm(message)) return;
+    setNotice(null);
+    try {
+      const result = await apiRequest('archive-patient', { token: session.access_token, method: 'POST', body: { patient_id: patient.id, is_archived: archive } });
+      setNotice({ kind: 'success', text: result.message });
+      if (editingPatientId === patient.id) setEditingPatientId('');
+      await loadDashboard(true);
+    } catch (e) { setNotice({ kind: 'error', text: e.message || 'เปลี่ยนสถานะโปรไฟล์ไม่สำเร็จ' }); }
   }
 
   async function approve(requestId) {
