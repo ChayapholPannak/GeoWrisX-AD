@@ -13,7 +13,7 @@ export default async function handler(request) {
     const displayName = typeof body.display_name === 'string' ? body.display_name.trim() : '';
     const relationship = typeof body.relationship === 'string' ? body.relationship.trim() : '';
     const dateOfBirth = typeof body.date_of_birth === 'string' ? body.date_of_birth.trim() : '';
-    const datePattern = /^\\d{4}-\\d{2}-\\d{2}$/;
+    const datePattern = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
 
     if (displayName.length < 2 || displayName.length > 100) {
       return json(400, { error: 'ชื่อผู้ป่วย/รหัสนามแฝงต้องมีความยาว 2–100 ตัวอักษร' });
