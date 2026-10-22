@@ -146,27 +146,6 @@ In **Project configuration → Environment variables**, configure:
 
 Never use a `VITE_` prefix for service-role or device-ingestion secrets. The site URL used for Supabase Auth email confirmation must also be configured under **Authentication → URL Configuration** in Supabase.
 
-## 4. Deploy to Netlify
-
-1. เข้าสู่ [Netlify](https://app.netlify.com/) แล้วเลือก **Add new site → Import an existing project**
-2. เชื่อม GitHub และเลือก repository นี้
-3. ค่า build ที่กำหนดใน `netlify.toml` คือ:
-   - Build command: `npm run build`
-   - Publish directory: `dist`
-   - Functions directory: `netlify/functions`
-4. ที่ **Site configuration → Environment variables** เพิ่มตัวแปร:
-   - `VITE_SUPABASE_URL`
-   - `VITE_SUPABASE_PUBLISHABLE_KEY`
-   - `SUPABASE_URL`
-   - `SUPABASE_PUBLISHABLE_KEY`
-   - `SUPABASE_SERVICE_ROLE_KEY` (ใช้สำหรับ `device-event` เท่านั้น)
-   - `DEVICE_INGEST_SECRET` (ใช้สำหรับ `device-event` เท่านั้น)
-   - `ALLOWED_ORIGIN` = URL ของ Netlify site เช่น `https://YOUR-SITE.netlify.app`
-5. กำหนดให้ตัวแปรลับมีค่าเป็น Secret/Sensitive ตามที่ UI รองรับ และตรวจ Scope ให้ Netlify Functions อ่านตัวแปรฝั่ง server ได้
-6. กด Deploy แล้วกลับไป Supabase → Authentication → URL Configuration เพื่อเพิ่ม URL จริงของเว็บไซต์ Netlify
-7. ทดสอบสมัครผู้ใช้ใหม่, ยืนยันอีเมล (หากเปิดไว้), login, เพิ่มโปรไฟล์ และตรวจ Function logs เมื่อมีข้อผิดพลาด
-8. ทุกครั้งที่แก้ Environment Variables ให้ trigger deploy ใหม่ เพื่อให้ build frontend และ Functions ใช้ค่าใหม่
-
 ## 5. Register devices for a test patient
 
 แอปเริ่มจากเพิ่มโปรไฟล์ผู้ป่วยในหน้า Dashboard ก่อน จากนั้นต้อง provision `devices` สำหรับสายรัดและกล่องยา ตัวอย่าง SQL สำหรับการทดสอบเท่านั้น:
