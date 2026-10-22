@@ -1,0 +1,38 @@
+name: Web build check
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "geowrisx-web/**"
+      - ".github/workflows/web-build.yml"
+  pull_request:
+    paths:
+      - "geowrisx-web/**"
+      - ".github/workflows/web-build.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Install and build web app
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: geowrisx-web
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build React app
+        run: npm run build
