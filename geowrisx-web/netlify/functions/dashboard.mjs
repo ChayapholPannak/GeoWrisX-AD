@@ -12,7 +12,7 @@ export default async function handler(request) {
     // RLS limits this query to patients owned by the authenticated caregiver.
     const { data: patients, error: patientsError } = await supabase
       .from('patients')
-      .select('id, display_name, created_at')
+      .select('id, display_name, relationship, date_of_birth, is_archived, created_at, updated_at')
       .order('created_at', { ascending: false });
     if (patientsError) throw patientsError;
 
