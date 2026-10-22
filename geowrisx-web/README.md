@@ -77,7 +77,7 @@ geowrisx-web/
 
 ## 1. Create a Supabase project
 
-1. ไปที่ [Supabase](https://supabase.com/) แล้วสร้าง Project ใหม่
+1. เปิด [Supabase Dashboard](https://supabase.com/dashboard) แล้วเลือก Project GeoWrisX-AD ที่มีอยู่แล้ว (ไม่ต้องสร้าง Project ใหม่)
 2. เปิด **SQL Editor** และรันไฟล์ `supabase/setup.sql` ทั้งไฟล์
 3. จากนั้นรันไฟล์ migration `supabase/migrations/20261023_patient_caregiver_management.sql` เพื่อเพิ่มฟิลด์ผู้ป่วยและตารางโปรไฟล์ผู้ดูแล **migration นี้จำเป็นสำหรับฟีเจอร์จัดการโปรไฟล์รุ่นล่าสุด**
 4. เปิด **Project Settings → API / Connect** แล้วคัดลอก Project URL และ Publishable key (โปรเจกต์รุ่นเก่าอาจแสดง `anon` key)
