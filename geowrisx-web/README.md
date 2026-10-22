@@ -1,5 +1,7 @@
 # GeoWrisX AD — Caregiver Web Application
 
+> Portfolio overview: see the repository root [README](../README.md) and [PORTFOLIO.md](../PORTFOLIO.md) for project summary, implementation status, responsible-use boundaries and admissions evidence checklist.
+
 เว็บแอปต้นแบบสำหรับโครงงาน **ระบบช่วยเหลือผู้ป่วยโรคอัลไซเมอร์ (GeoWrisX AD)** อ้างอิงขอบเขตจากเอกสารโครงงานที่ให้มา โดยรวมงานหลักของผู้ดูแลไว้ในแดชบอร์ดเดียว:
 
 - สมัครสมาชิกและเข้าสู่ระบบด้วย Supabase Auth (JWT)
@@ -113,22 +115,36 @@ npm run netlify:dev
 
 คำสั่ง `npm run dev` ใช้พัฒนา UI อย่างเดียว; การเรียก API `/api/*` ให้ทดสอบผ่าน `npm run netlify:dev` เพราะเป็นตัวที่เปิด Netlify Functions ให้ด้วย
 
-## 3. Deploy to GitHub
+## 3. GitHub repository workflow
 
-1. สร้าง Repository ใหม่ใน GitHub เช่น `GeoWrisX-AD-Web`
-2. ตรวจว่า `.env` ไม่อยู่ในไฟล์ที่จะ commit (`.gitignore` ตั้งค่าไว้แล้ว)
-3. ใน terminal รัน:
+This web app lives in the existing repository `ChayapholPannak/GeoWrisX-AD`, under `geowrisx-web/`. **Do not create another repository just for this folder unless you intentionally want to split the project.**
 
-```bash
-git init
-git add .
-git commit -m "Initial GeoWrisX AD caregiver web app"
-git branch -M main
-git remote add origin https://github.com/YOUR-USERNAME/GeoWrisX-AD-Web.git
-git push -u origin main
-```
+- Keep source code and documentation in GitHub.
+- Do not commit real `.env` files, service-role/secret keys, patient data, private email addresses or exact home coordinates.
+- When changing files, review the diff in GitHub Desktop, commit the intended changes, and push to the existing `main` branch.
+- If working from a new computer and there is no local copy yet, clone the existing repository once. Do not clone it again if an existing local working copy is already present.
 
-ถ้า repository ถูกสร้างไว้แล้ว ให้ใช้ clone repository นั้นก่อน แล้วคัดลอกไฟล์โปรเจกต์ไปวางใน working tree แทนการ `git init` ซ้ำ
+## 4. Deploy to Netlify
+
+Import the existing repository `ChayapholPannak/GeoWrisX-AD` in Netlify. Because this app is stored in the `geowrisx-web/` subdirectory, configure:
+
+- **Base directory:** `geowrisx-web`
+- **Build command:** `npm run build`
+- **Publish directory:** `dist`
+- **Functions directory:** `netlify/functions`
+
+Keep these values consistent with `geowrisx-web/netlify.toml`. Do not set the publish directory to the repository root.
+
+In **Project configuration → Environment variables**, configure:
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_PUBLISHABLE_KEY`
+- `SUPABASE_URL`
+- `SUPABASE_PUBLISHABLE_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY` (server-side only; used by `device-event`)
+- `DEVICE_INGEST_SECRET` (server-side only; used by `device-event`)
+- `ALLOWED_ORIGIN` (the exact production origin, e.g. `https://YOUR-SITE.netlify.app`)
+
+Never use a `VITE_` prefix for service-role or device-ingestion secrets. The site URL used for Supabase Auth email confirmation must also be configured under **Authentication → URL Configuration** in Supabase.
 
 ## 4. Deploy to Netlify
 
