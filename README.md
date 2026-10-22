@@ -25,10 +25,12 @@ GeoWrisX AD explores a **Dual-Safety Matrix**: wearable/event awareness + caregi
 | Area | Current implementation |
 |---|---|
 | Caregiver interface | Responsive React dashboard and sign-in/sign-up screens |
+| Patient management | Create/edit patient profiles; optional relationship/date fields; archive/restore without deleting related history |
+| Caregiver profile | Update display name, phone and relationship; account email is read-only in this screen |
 | Authentication | Supabase Auth; password handling and JWT sessions are managed by Supabase Auth |
-| Data storage | PostgreSQL schema for patient profiles, devices, alerts, approvals and queued commands |
+| Data storage | PostgreSQL schema for patient profiles, caregiver profiles, devices, alerts, approvals and queued commands |
 | Access control | Row Level Security (RLS) policies and explicit table grants defined in the SQL setup |
-| Server-side API | Netlify Functions for dashboard data, patient creation, pillbox approval flow and device-event ingestion |
+| Server-side API | Netlify Functions for dashboard queries, patient create/update/archive, caregiver profile read/update, pillbox approval and prototype device-event ingestion |
 | Deployment | GitHub repository connected to Netlify; build configuration is in `geowrisx-web/netlify.toml` |
 | Physical hardware | **Integration work remains.** Do not claim real-device operation until the BLE/GPS/firmware/gateway path is implemented and tested end to end. |
 
