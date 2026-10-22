@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 const sharedCorsHeaders = () => ({
   'Access-Control-Allow-Origin': process.env.ALLOWED_ORIGIN || '*',
   'Access-Control-Allow-Headers': 'authorization, content-type, x-device-ingest-secret',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, OPTIONS',
   'Content-Type': 'application/json; charset=utf-8',
   'Cache-Control': 'no-store',
   Vary: 'Origin',
