@@ -81,7 +81,7 @@ geowrisx-web/
 2. เปิด **SQL Editor** และรันไฟล์ `supabase/setup.sql` ทั้งไฟล์
 3. จากนั้นรันไฟล์ migration `supabase/migrations/20261023_patient_caregiver_management.sql` เพื่อเพิ่มฟิลด์ผู้ป่วยและตารางโปรไฟล์ผู้ดูแล **migration นี้จำเป็นสำหรับฟีเจอร์จัดการโปรไฟล์รุ่นล่าสุด**
 4. เปิด **Project Settings → API / Connect** แล้วคัดลอก Project URL และ Publishable key (โปรเจกต์รุ่นเก่าอาจแสดง `anon` key)
-4. ไปที่ **Authentication → URL Configuration** แล้วใส่ URL สำหรับ Local และ Netlify ใน Site URL / Redirect URLs เช่น:
+5. ไปที่ **Authentication → URL Configuration** แล้วใส่ URL สำหรับ Local และ Netlify ใน Site URL / Redirect URLs เช่น:
    - Local: `http://localhost:8888/**`
    - Production: `https://YOUR-SITE.netlify.app/**`
 6. ตั้งค่า Email Confirmation ตามนโยบายของโครงงาน หากเปิดยืนยันอีเมล ผู้ใช้ต้องกดยืนยันจากอีเมลก่อนจึงเข้าสู่ระบบได้
