@@ -8,7 +8,8 @@
 - Dashboard รายชื่อโปรไฟล์ผู้ป่วยและสถานะอุปกรณ์
 - รายการแจ้งเตือน เช่น ออกจาก Geofence, เปิด/ถอดสายรัด, แบตเตอรี่ต่ำ และ BLE หลุด
 - คำขออนุมัติกล่องยา: ตรวจว่าเจ้าของบัญชีถูกต้อง คำขอยังไม่หมดอายุ และมี `ble_verified = true` ก่อนอนุมัติ
-- เพิ่มโปรไฟล์ผู้ป่วยสำหรับการทดสอบ
+- จัดการโปรไฟล์ผู้ป่วย: เพิ่ม/แก้ไข/เก็บเข้าคลัง/กู้คืน โดยไม่ลบประวัติที่เกี่ยวข้อง
+- โปรไฟล์ผู้ดูแล: ชื่อแสดงผล เบอร์โทรศัพท์ และความสัมพันธ์กับผู้ป่วย; อีเมลบัญชีเป็นข้อมูลอ่านอย่างเดียว
 - Netlify Functions เป็น API layer และ Supabase Postgres เป็นฐานข้อมูล
 
 > **สถานะ:** Research prototype / OCOP เท่านั้น ไม่ใช่อุปกรณ์การแพทย์ที่ผ่านการรับรอง และยังไม่ควรใช้กับข้อมูลผู้ป่วยจริงหรือให้กลอนยาจริงทำงานจนกว่าจะผ่านการทดสอบความปลอดภัย การประเมินความเสี่ยง และการตรวจสอบโดยผู้รับผิดชอบ
@@ -78,11 +79,12 @@ geowrisx-web/
 
 1. ไปที่ [Supabase](https://supabase.com/) แล้วสร้าง Project ใหม่
 2. เปิด **SQL Editor** และรันไฟล์ `supabase/setup.sql` ทั้งไฟล์
-3. เปิด **Project Settings → API / Connect** แล้วคัดลอก Project URL และ Publishable key (โปรเจกต์รุ่นเก่าอาจแสดง `anon` key)
+3. จากนั้นรันไฟล์ migration `supabase/migrations/20261023_patient_caregiver_management.sql` เพื่อเพิ่มฟิลด์ผู้ป่วยและตารางโปรไฟล์ผู้ดูแล **migration นี้จำเป็นสำหรับฟีเจอร์จัดการโปรไฟล์รุ่นล่าสุด**
+4. เปิด **Project Settings → API / Connect** แล้วคัดลอก Project URL และ Publishable key (โปรเจกต์รุ่นเก่าอาจแสดง `anon` key)
 4. ไปที่ **Authentication → URL Configuration** แล้วใส่ URL สำหรับ Local และ Netlify ใน Site URL / Redirect URLs เช่น:
    - Local: `http://localhost:8888/**`
    - Production: `https://YOUR-SITE.netlify.app/**`
-5. ตั้งค่า Email Confirmation ตามนโยบายของโครงงาน หากเปิดยืนยันอีเมล ผู้ใช้ต้องกดยืนยันจากอีเมลก่อนจึงเข้าสู่ระบบได้
+6. ตั้งค่า Email Confirmation ตามนโยบายของโครงงาน หากเปิดยืนยันอีเมล ผู้ใช้ต้องกดยืนยันจากอีเมลก่อนจึงเข้าสู่ระบบได้
 
 ### Environment variables สำหรับ Local
 
@@ -170,7 +172,10 @@ values
 | Endpoint | Method | หน้าที่ |
 |---|---|---|
 | `/api/dashboard` | GET | อ่าน patients, devices, alerts, approvals, commands ของผู้ใช้ที่ล็อกอิน |
-| `/api/create-patient` | POST | สร้างโปรไฟล์ผู้ป่วยของบัญชีปัจจุบัน |
+| `/api/create-patient` | POST | สร้างโปรไฟล์ผู้ป่วยของบัญชีปัจจุบัน พร้อมความสัมพันธ์และวันเกิด (ไม่บังคับ) |
+| `/api/update-patient` | PATCH | แก้ไขชื่อ/รหัสนามแฝง ความสัมพันธ์ และวันเกิดของผู้ป่วยที่บัญชีเป็นเจ้าของ |
+| `/api/archive-patient` | POST | เก็บโปรไฟล์เข้าคลังหรือกู้คืน โดยไม่ลบแถวหรือประวัติที่เกี่ยวข้อง |
+| `/api/caregiver-profile` | GET / PUT | อ่าน/บันทึกชื่อ เบอร์ติดต่อ และความสัมพันธ์ของผู้ดูแลที่ล็อกอินอยู่
 | `/api/approve-pillbox` | POST | เรียก RPC ที่ตรวจเจ้าของคำขอ, pending state, เวลา expiry และ BLE proof ก่อนเพิ่มคำสั่งเข้าคิว |
 | `/api/device-event` | POST | รับสถานะ/เหตุการณ์จาก hardware gateway สำหรับ prototype โดยใช้ `x-device-ingest-secret` |
 
