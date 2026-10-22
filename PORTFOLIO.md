@@ -39,8 +39,10 @@ The prototype is intended for software/hardware research and demonstration. It i
 
 - Responsive React sign-in/sign-up and caregiver dashboard UI.
 - Supabase Auth client integration.
-- PostgreSQL schema and RLS policies for the main application tables.
-- Netlify Functions for dashboard queries, patient-profile creation, pillbox approval handling and prototype device-event ingestion.
+- Patient profile create/update flows, optional relationship/date fields, and archive/restore controls designed to preserve related history.
+- Caregiver profile read/update flow for display name, contact phone and relationship; account email remains read-only on this screen.
+- PostgreSQL schema, RLS policies and a separate SQL migration for the new caregiver profile and patient management fields.
+- Netlify Functions for dashboard queries, patient CRUD/archive actions, caregiver profile read/update, pillbox approval handling and prototype device-event ingestion.
 - Netlify build configuration for a web app stored inside the `geowrisx-web/` subdirectory.
 - Environment-variable separation between browser-visible configuration and server-side credentials.
 
