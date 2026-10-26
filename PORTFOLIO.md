@@ -3,6 +3,8 @@
 > **Purpose:** A concise, evidence-oriented summary for university applications, project exhibitions and technical interviews.  
 > **Project type:** Student Research & Development (R&D) prototype · OCOP  
 > **Stage:** Web prototype deployed; full wearable-to-pillbox integration and validation remain in progress.
+>
+> **Development process:** See the [SDLC step-by-step guide (Thai)](SDLC.md) for how this project is planned, analysed, designed, built, tested, deployed and maintained.
 
 ## 1. Project summary
 
