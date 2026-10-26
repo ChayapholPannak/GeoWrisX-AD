@@ -7,7 +7,7 @@
 
 > **Project status:** Research and development prototype. The web dashboard has been deployed and the Supabase dashboard data flow was tested during development. The physical wristband, GPS/geofencing, BLE proximity verification, MQTT/device gateway and solenoid actuation are **not yet validated as a complete real-world system**. This project is not a certified medical device or emergency service.
 
-**Documentation:** [Portfolio brief](PORTFOLIO.md) · [Technical setup and API reference](geowrisx-web/README.md) · [Supabase schema](geowrisx-web/supabase/setup.sql)
+**Documentation:** [SDLC step-by-step guide (Thai)](SDLC.md) · [Portfolio brief](PORTFOLIO.md) · [Technical setup and API reference](geowrisx-web/README.md) · [Supabase schema](geowrisx-web/supabase/setup.sql)
 
 ---
 
@@ -75,6 +75,7 @@ flowchart TD
 GeoWrisX-AD/
 ├── README.md                     # Project overview for reviewers
 ├── PORTFOLIO.md                  # Admissions portfolio brief and evidence checklist
+├── SDLC.md                       # Thai step-by-step SDLC thinking guide
 └── geowrisx-web/
     ├── src/                      # React UI and Supabase client
     ├── netlify/functions/        # Server-side API endpoints
