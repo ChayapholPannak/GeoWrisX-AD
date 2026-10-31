@@ -7,7 +7,7 @@
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
-    "netlify:dev": "netlify dev"
+    "cloudflare:dev": "wrangler pages dev"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.0",
@@ -18,8 +18,8 @@
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.13",
     "@vitejs/plugin-react": "^5.0.2",
-    "netlify-cli": "^23.9.0",
     "tailwindcss": "^4.1.13",
-    "vite": "^7.1.7"
+    "vite": "^7.1.7",
+    "wrangler": "^4.156.0"
   }
 }

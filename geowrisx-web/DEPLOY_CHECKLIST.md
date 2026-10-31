@@ -2,7 +2,7 @@
 
 
 ## Free-tier cost check
-- [ ] Netlify plan เป็น Free ($0); ใช้ `*.netlify.app` แทนการซื้อโดเมนเอง
+- [ ] ใช้ Cloudflare Pages subdomain `*.pages.dev` ระหว่างทดสอบ และตรวจโควต้าปัจจุบันก่อน deploy
 - [ ] ไม่เปิดซื้อ credits เพิ่มหรือ auto recharge
 - [ ] Supabase organization/project ยังคงเป็น Free และไม่มี paid add-ons
 - [ ] ยังไม่ตั้ง MQTT broker แบบเสียเงิน; เวอร์ชันแรกทดสอบ API ผ่าน HTTPS
@@ -17,14 +17,14 @@
 - [ ] รัน `supabase/setup.sql` แล้ว
 - [ ] RLS เปิดอยู่ทุกตารางใน schema
 
-## Before Netlify deploy
-- [ ] Repository เชื่อมกับ Netlify
+## Before Cloudflare Pages deploy
+- [ ] Repository เชื่อมกับ Cloudflare Pages
 - [ ] Build command `npm run build`, publish directory `dist`
 - [ ] เพิ่ม `VITE_SUPABASE_URL` และ `VITE_SUPABASE_PUBLISHABLE_KEY`
 - [ ] เพิ่ม server-side vars `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`
 - [ ] หากเปิด Device Gateway: เพิ่ม `SUPABASE_SERVICE_ROLE_KEY`, `DEVICE_INGEST_SECRET`
 - [ ] ตั้ง `ALLOWED_ORIGIN` ให้ตรงกับโดเมนจริง
-- [ ] เพิ่ม Netlify URL ใน Supabase Auth Redirect URLs
+- [ ] เพิ่ม Cloudflare Pages URL ใน Supabase Auth Redirect URLs
 - [ ] Redeploy หลังเปลี่ยน Environment Variables
 
 ## Smoke tests

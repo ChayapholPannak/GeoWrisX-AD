@@ -30,8 +30,8 @@ GeoWrisX AD explores a **Dual-Safety Matrix**: wearable/event awareness + caregi
 | Authentication | Supabase Auth; password handling and JWT sessions are managed by Supabase Auth |
 | Data storage | PostgreSQL schema for patient profiles, caregiver profiles, devices, alerts, approvals and queued commands |
 | Access control | Row Level Security (RLS) policies and explicit table grants defined in the SQL setup |
-| Server-side API | Netlify Functions for dashboard queries, patient create/update/archive, caregiver profile read/update, pillbox approval and prototype device-event ingestion |
-| Deployment | GitHub repository connected to Netlify; build configuration is in `geowrisx-web/netlify.toml` |
+| Server-side API | Cloudflare Pages Functions for dashboard queries, patient create/update/archive, caregiver profile read/update, pillbox approval and prototype device-event ingestion |
+| Deployment | GitHub repository connected to Cloudflare Pages; settings are documented in `geowrisx-web/CLOUDFLARE.md` |
 | Physical hardware | **Integration work remains.** Do not claim real-device operation until the BLE/GPS/firmware/gateway path is implemented and tested end to end. |
 
 The database setup script defines an `approve_pillbox_request(uuid)` routine. Before demonstrating pillbox approval, verify that this routine exists in the live Supabase database and test the full expiry/ownership/BLE checks. A queued command is not the same as a physical lock being actuated.
@@ -43,7 +43,7 @@ flowchart TD
     Caregiver[Caregiver in web browser]
     Web[React + Vite dashboard]
     Auth[Supabase Auth]
-    API[Netlify Functions]
+    API[Cloudflare Pages Functions]
     DB[(Supabase PostgreSQL + RLS)]
     Gateway[Future trusted device gateway]
     Wristband[M5StickC Plus2 + GPS / BLE]
@@ -65,8 +65,8 @@ flowchart TD
 - **Frontend:** React, Vite, Tailwind CSS v4, Lucide
 - **Authentication:** Supabase Auth
 - **Database and access rules:** Supabase PostgreSQL, RLS
-- **Backend:** Netlify Functions (Node.js / Fetch API handlers)
-- **Version control and deployment:** GitHub + Netlify
+- **Backend:** Cloudflare Pages Functions (Workers runtime / Fetch API handlers)
+- **Version control and deployment:** GitHub + Cloudflare Pages
 - **Planned device layer:** M5StickC Plus2 / ESP32, BLE, GPS, Hall sensor, vibration motor and a trusted gateway
 
 ## Repository layout
@@ -78,9 +78,9 @@ GeoWrisX-AD/
 ├── SDLC.md                       # Thai step-by-step SDLC thinking guide
 └── geowrisx-web/
     ├── src/                      # React UI and Supabase client
-    ├── netlify/functions/        # Server-side API endpoints
+    ├── functions/api/            # Cloudflare Pages API endpoints
     ├── supabase/setup.sql        # Schema, RLS policies and approval routine
-    ├── netlify.toml              # Build, function and redirect configuration
+    ├── wrangler.jsonc            # Cloudflare Pages local configuration
     ├── package.json
     └── README.md                 # Developer setup and API documentation
 ```
@@ -91,36 +91,37 @@ Requirements: Node.js 20+ (Node.js 22 recommended).
 
 1. Open a terminal in `geowrisx-web/`.
 2. Copy `.env.example` to `.env` and fill in your own development values.
-3. Install dependencies and start the local Netlify development server:
+3. Install dependencies, build, and start the local Cloudflare Pages development server:
 
    ```bash
    npm install
-   npm run netlify:dev
+   npm run build
+   npm run cloudflare:dev
    ```
 
-4. Visit `http://localhost:8888`.
+4. Visit `http://localhost:8788`.
 
 The Supabase SQL script is provided at `geowrisx-web/supabase/setup.sql`. Run it only in the intended development Supabase project, and verify the tables, RLS policies, grants and approval routine after execution.
 
-## Netlify deployment settings
+## Cloudflare Pages deployment settings
 
-The web app is in a subfolder, so the Netlify **Base directory** should be `geowrisx-web`.
+The web app is in a subfolder, so the Cloudflare Pages **Root directory** should be `geowrisx-web`.
 
 | Setting | Value |
 |---|---|
-| Base directory | `geowrisx-web` |
+| Root directory | `geowrisx-web` |
 | Build command | `npm run build` |
 | Publish directory | `dist` |
-| Functions directory | `netlify/functions` |
+| Functions directory | `functions/` (detected automatically) |
 
-Set environment variables in Netlify's UI. Use placeholders in documentation and never commit actual credentials.
+Set environment variables and encrypted secrets in Cloudflare's UI. See `geowrisx-web/CLOUDFLARE.md`; never commit actual credentials.
 
 ### Environment-variable safety
 
 - `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` are intentionally used in browser code. The publishable key must be paired with correct RLS policies.
-- `SUPABASE_URL` is a project URL, not a database password. Since its value may also appear in the built frontend under `VITE_SUPABASE_URL`, do not mark the duplicate URL value as a hidden secret in a way that causes Netlify's secret scanner to fail the build.
+- `SUPABASE_URL` is a project URL, not a database password. Since its value may also appear in the built frontend under `VITE_SUPABASE_URL`, configure it as a plaintext Cloudflare variable.
 - `SUPABASE_SERVICE_ROLE_KEY` and `DEVICE_INGEST_SECRET` must remain server-side secrets. Never prefix them with `VITE_`, place them in React code, or commit real values to GitHub.
-- Configure `ALLOWED_ORIGIN` with the exact production site origin once the final Netlify URL is confirmed.
+- Configure `ALLOWED_ORIGIN` with the exact production Pages origin once the final Cloudflare URL is confirmed.
 
 ## Security and responsible-use principles
 

@@ -150,5 +150,5 @@ $$;
 revoke all on function public.approve_pillbox_request(uuid) from public, anon;
 grant execute on function public.approve_pillbox_request(uuid) to authenticated;
 
--- IMPORTANT: Hardware ingestion uses the server-side service role key through a Netlify Function.
+-- IMPORTANT: Hardware ingestion uses the server-side service role key through a Cloudflare Pages Function.
 -- Never place SUPABASE_SERVICE_ROLE_KEY in VITE_ variables or in browser code.

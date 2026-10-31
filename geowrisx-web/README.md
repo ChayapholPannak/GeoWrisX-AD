@@ -10,7 +10,7 @@
 - คำขออนุมัติกล่องยา: ตรวจว่าเจ้าของบัญชีถูกต้อง คำขอยังไม่หมดอายุ และมี `ble_verified = true` ก่อนอนุมัติ
 - จัดการโปรไฟล์ผู้ป่วย: เพิ่ม/แก้ไข/เก็บเข้าคลัง/กู้คืน โดยไม่ลบประวัติที่เกี่ยวข้อง
 - โปรไฟล์ผู้ดูแล: ชื่อแสดงผล เบอร์โทรศัพท์ และความสัมพันธ์กับผู้ป่วย; อีเมลบัญชีเป็นข้อมูลอ่านอย่างเดียว
-- Netlify Functions เป็น API layer และ Supabase Postgres เป็นฐานข้อมูล
+- Cloudflare Pages Functions เป็น API layer และ Supabase Postgres เป็นฐานข้อมูล
 
 > **สถานะ:** Research prototype / OCOP เท่านั้น ไม่ใช่อุปกรณ์การแพทย์ที่ผ่านการรับรอง และยังไม่ควรใช้กับข้อมูลผู้ป่วยจริงหรือให้กลอนยาจริงทำงานจนกว่าจะผ่านการทดสอบความปลอดภัย การประเมินความเสี่ยง และการตรวจสอบโดยผู้รับผิดชอบ
 
@@ -22,28 +22,28 @@
 | ส่วนประกอบ | แพ็กเกจ/บริการ | หมายเหตุเรื่องค่าใช้จ่าย |
 |---|---|---|
 | เก็บโค้ด | GitHub Free | ใช้ repository แบบ Private ได้ |
-| Frontend + API Functions | Netlify Free | ใช้ URL ฟรีรูปแบบ `ชื่อเว็บ.netlify.app`; มีโควตา 300 credits/เดือนตามเงื่อนไขปัจจุบัน เมื่อถึงขีดจำกัดเว็บอาจถูกพักจนรอบใหม่ ไม่จำเป็นต้องซื้อเครดิตเพิ่ม |
+| Frontend + API Functions | Cloudflare Pages | ใช้ URL ฟรีรูปแบบ `ชื่อเว็บ.pages.dev`; ตรวจเงื่อนไขและโควต้าปัจจุบันก่อนเปิดใช้งานจริง |
 | Login + Database | Supabase Free | เหมาะกับ prototype; โควตาตามหน้าราคาปัจจุบันรวมฐานข้อมูล 500 MB ต่อโปรเจกต์และพื้นที่ไฟล์ 1 GB; โปรเจกต์ที่ไม่มีการใช้งานเพียงพออาจถูกพักหลังไม่มี activity ประมาณ 7 วัน |
 | MQTT | **ยังไม่ต้องใช้ในเวอร์ชันแรก** | ตัวอย่างนี้ให้เว็บ/API ทำงานผ่าน HTTPS ก่อน จึงไม่ต้องสมัคร MQTT Broker แบบมีค่าใช้จ่ายเพื่อเริ่มทดลอง |
 
 ### วิธีหลีกเลี่ยงค่าใช้จ่ายโดยไม่ตั้งใจ
 
-1. ใช้ Netlify subdomain ฟรี ไม่ต้องซื้อ custom domain ในช่วงทำโครงงาน
-2. คงบัญชี Netlify ไว้ที่ Free และ **อย่าเปิดการซื้อเครดิตเพิ่ม/auto recharge** หากมีตัวเลือกดังกล่าว
+1. ใช้ Cloudflare Pages subdomain ฟรี ไม่ต้องซื้อ custom domain ในช่วงทำโครงงาน
+2. ตรวจโควตาและ usage ของ Cloudflare Pages เป็นระยะก่อนเปิดใช้งานจริง
 3. คง Supabase Organization ไว้ที่ Free และอย่ากด Upgrade หรือเพิ่ม paid add-ons
 4. ใช้ข้อมูลจำลองระหว่างพัฒนา จำกัดรูปภาพ/ไฟล์ที่อัปโหลด และตรวจการใช้งานจากหน้า Usage ของทั้งสองบริการเป็นระยะ
 5. Free tier อาจพักแอปเมื่อโควตาหมดหรือพักโปรเจกต์เมื่อไม่มีการใช้งาน จึงเหมาะกับต้นแบบ OCOP/สาธิต ไม่ใช่การรับประกันระบบเฝ้าระวังผู้ป่วยแบบ 24/7
 6. ห้ามนำข้อมูลสุขภาพจริงหรือข้อมูลระบุตัวผู้ป่วยใส่ในต้นแบบสาธิตโดยไม่ได้รับอนุญาตและจัดมาตรการคุ้มครองข้อมูลให้เหมาะสม
 
-> ค่าโควตาและเงื่อนไข Free tier อาจเปลี่ยนได้ โปรดตรวจ [Netlify Pricing](https://www.netlify.com/pricing/) และ [Supabase Pricing](https://supabase.com/pricing) ก่อน Deploy ทุกครั้ง
+> ค่าโควตาและเงื่อนไขอาจเปลี่ยนได้ โปรดตรวจ [Cloudflare Pages pricing](https://www.cloudflare.com/developer-platform/products/pages/) และ [Supabase Pricing](https://supabase.com/pricing) ก่อน Deploy ทุกครั้ง
 
 ## Technology stack
 
 - Frontend: React + Vite + Tailwind CSS v4 + Lucide
 - Authentication: Supabase Auth (JWT)
 - Database: Supabase PostgreSQL + Row Level Security (RLS)
-- Backend/API: Netlify Functions (Node.js / Fetch API handlers)
-- Hosting/CI/CD: GitHub + Netlify
+- Backend/API: Cloudflare Pages Functions (Workers runtime / Fetch API handlers)
+- Hosting/CI/CD: GitHub + Cloudflare Pages
 - Device bridge: `device-event` เป็น HTTPS endpoint สำหรับต้นแบบ; MQTT ต้องต่อผ่าน gateway/worker แยก ไม่ควรเปิด MQTT credentials ไว้ใน browser
 
 ## Folder structure
@@ -53,7 +53,7 @@ geowrisx-web/
 ├── index.html
 ├── package.json
 ├── vite.config.js
-├── netlify.toml
+├── wrangler.jsonc
 ├── .env.example
 ├── .gitignore
 ├── README.md
@@ -66,13 +66,14 @@ geowrisx-web/
 │   └── lib/
 │       ├── api.js
 │       └── supabase.js
-└── netlify/
-    └── functions/
-        ├── lib/http.mjs
-        ├── dashboard.mjs
-        ├── create-patient.mjs
-        ├── approve-pillbox.mjs
-        └── device-event.mjs
+├── cloudflare/
+│   └── http.js
+└── functions/
+    └── api/
+        ├── dashboard.js
+        ├── create-patient.js
+        ├── approve-pillbox.js
+        └── device-event.js
 ```
 
 ## 1. Create a Supabase project
@@ -81,9 +82,9 @@ geowrisx-web/
 2. เปิด **SQL Editor** และรันไฟล์ `supabase/setup.sql` ทั้งไฟล์
 3. จากนั้นรันไฟล์ migration `supabase/migrations/20261023_patient_caregiver_management.sql` เพื่อเพิ่มฟิลด์ผู้ป่วยและตารางโปรไฟล์ผู้ดูแล **migration นี้จำเป็นสำหรับฟีเจอร์จัดการโปรไฟล์รุ่นล่าสุด**
 4. เปิด **Project Settings → API / Connect** แล้วคัดลอก Project URL และ Publishable key (โปรเจกต์รุ่นเก่าอาจแสดง `anon` key)
-5. ไปที่ **Authentication → URL Configuration** แล้วใส่ URL สำหรับ Local และ Netlify ใน Site URL / Redirect URLs เช่น:
-   - Local: `http://localhost:8888/**`
-   - Production: `https://YOUR-SITE.netlify.app/**`
+5. ไปที่ **Authentication → URL Configuration** แล้วใส่ URL สำหรับ Local และ Cloudflare Pages ใน Site URL / Redirect URLs เช่น:
+   - Local: `http://localhost:8788/**`
+   - Production: `https://YOUR-SITE.pages.dev/**`
 6. ตั้งค่า Email Confirmation ตามนโยบายของโครงงาน หากเปิดยืนยันอีเมล ผู้ใช้ต้องกดยืนยันจากอีเมลก่อนจึงเข้าสู่ระบบได้
 
 ### Environment variables สำหรับ Local
@@ -110,12 +111,13 @@ ALLOWED_ORIGIN=http://localhost:8888
 
 ```bash
 npm install
-npm run netlify:dev
+npm run build
+npm run cloudflare:dev
 ```
 
-เปิด `http://localhost:8888` เพื่อทดสอบทั้ง Vite frontend และ Netlify Functions ผ่าน URL เดียวกัน
+เปิด `http://localhost:8788` เพื่อทดสอบทั้ง frontend และ Cloudflare Pages Functions ผ่าน URL เดียวกัน
 
-คำสั่ง `npm run dev` ใช้พัฒนา UI อย่างเดียว; การเรียก API `/api/*` ให้ทดสอบผ่าน `npm run netlify:dev` เพราะเป็นตัวที่เปิด Netlify Functions ให้ด้วย
+คำสั่ง `npm run dev` ใช้พัฒนา UI อย่างเดียว; การเรียก API `/api/*` ให้ build แล้วทดสอบผ่าน `npm run cloudflare:dev` เพราะเป็นตัวที่เปิด Pages Functions ให้ด้วย
 
 ## 3. GitHub repository workflow
 
@@ -126,25 +128,25 @@ This web app lives in the existing repository `ChayapholPannak/GeoWrisX-AD`, und
 - When changing files, review the diff in GitHub Desktop, commit the intended changes, and push to the existing `main` branch.
 - If working from a new computer and there is no local copy yet, clone the existing repository once. Do not clone it again if an existing local working copy is already present.
 
-## 4. Deploy to Netlify
+## 4. Deploy to Cloudflare Pages
 
-Import the existing repository `ChayapholPannak/GeoWrisX-AD` in Netlify. Because this app is stored in the `geowrisx-web/` subdirectory, configure:
+Import the existing repository `ChayapholPannak/GeoWrisX-AD` in Cloudflare Pages. Because this app is stored in the `geowrisx-web/` subdirectory, configure:
 
-- **Base directory:** `geowrisx-web`
+- **Root directory:** `geowrisx-web`
 - **Build command:** `npm run build`
 - **Publish directory:** `dist`
-- **Functions directory:** `netlify/functions`
+- **Functions directory:** `functions` (detected automatically)
 
-Keep these values consistent with `geowrisx-web/netlify.toml`. Do not set the publish directory to the repository root.
+Keep these values consistent with `geowrisx-web/CLOUDFLARE.md`. Do not set the output directory to the repository root.
 
-In **Project configuration → Environment variables**, configure:
+In **Settings → Variables and Secrets**, configure:
 - `VITE_SUPABASE_URL`
 - `VITE_SUPABASE_PUBLISHABLE_KEY`
 - `SUPABASE_URL`
 - `SUPABASE_PUBLISHABLE_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY` (server-side only; used by `device-event`)
 - `DEVICE_INGEST_SECRET` (server-side only; used by `device-event`)
-- `ALLOWED_ORIGIN` (the exact production origin, e.g. `https://YOUR-SITE.netlify.app`)
+- `ALLOWED_ORIGIN` (the exact production origin, e.g. `https://YOUR-SITE.pages.dev`)
 
 Never use a `VITE_` prefix for service-role or device-ingestion secrets. The site URL used for Supabase Auth email confirmation must also be configured under **Authentication → URL Configuration** in Supabase.
 

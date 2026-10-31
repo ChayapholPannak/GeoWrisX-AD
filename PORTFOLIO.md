@@ -29,8 +29,8 @@ The prototype is intended for software/hardware research and demonstration. It i
 | Web frontend | React, Vite, Tailwind CSS, Lucide | Responsive caregiver interface |
 | Authentication | Supabase Auth | Account registration, sign-in, JWT-backed sessions and email confirmation |
 | Data layer | PostgreSQL, Row Level Security (RLS) | Patient profiles, device records, alerts, approval records and command queue |
-| Server/API | Netlify Functions | Server-side API endpoints with token validation |
-| Deployment workflow | GitHub + Netlify | Version control and automated web builds |
+| Server/API | Cloudflare Pages Functions | Server-side API endpoints with token validation |
+| Deployment workflow | GitHub + Cloudflare Pages | Version control and automated web builds |
 | Wearable prototype (planned integration) | M5StickC Plus2 / ESP32, GPS, BLE, Hall sensor, vibration motor | Location/event sensing and wearable alerting |
 | Smart pillbox (planned integration) | ESP32, compartment sensors, driver circuitry and solenoid | Controlled compartment mechanism |
 | Device gateway (planned) | Server-side gateway; MQTT if required | Secure event ingestion and short-lived command delivery |
@@ -44,16 +44,16 @@ The prototype is intended for software/hardware research and demonstration. It i
 - Patient profile create/update flows, optional relationship/date fields, and archive/restore controls designed to preserve related history.
 - Caregiver profile read/update flow for display name, contact phone and relationship; account email remains read-only on this screen.
 - PostgreSQL schema, RLS policies and a separate SQL migration for the new caregiver profile and patient management fields.
-- Netlify Functions for dashboard queries, patient CRUD/archive actions, caregiver profile read/update, pillbox approval handling and prototype device-event ingestion.
-- Netlify build configuration for a web app stored inside the `geowrisx-web/` subdirectory.
+- Cloudflare Pages Functions for dashboard queries, patient CRUD/archive actions, caregiver profile read/update, pillbox approval handling and prototype device-event ingestion.
+- Cloudflare Pages build configuration for a web app stored inside the `geowrisx-web/` subdirectory.
 - Environment-variable separation between browser-visible configuration and server-side credentials.
 
 ### Verified during development
 
 - A Supabase project and the main database tables were created.
-- The web app was published on Netlify.
+- The web app is deployed through Cloudflare Pages.
 - A dashboard access issue caused by missing table privileges was resolved by granting appropriate table privileges while retaining RLS.
-- The Supabase email redirect configuration was corrected to use the Netlify production URL rather than localhost.
+- The Supabase email redirect configuration must use the Cloudflare Pages production URL rather than localhost.
 
 ### Not yet verified end-to-end
 
@@ -84,7 +84,7 @@ Use this section as a starting point and personalize it with only things you can
 - **System thinking:** dividing the solution into frontend, authentication, database, serverless API and future device layers.
 - **Debugging:** using deployment logs to identify build-time secret scanning and database permission errors instead of guessing.
 - **Access control:** learning the difference between table privileges and row-level security.
-- **Deployment:** configuring a subdirectory-based Netlify build and connecting production URLs to authentication email redirects.
+- **Deployment:** configuring a subdirectory-based Cloudflare Pages build and connecting production URLs to authentication email redirects.
 - **Responsible engineering:** recording what is still untested and not presenting a prototype as a validated medical or safety product.
 
 ## 7. My individual contribution
@@ -114,7 +114,7 @@ Recommended evidence strengthens this portfolio more than inflated claims:
 
 ## 9. Suggested 30-second presentation
 
-“GeoWrisX AD is a student R&D prototype exploring a dual-safety workflow for Alzheimer's caregiving. I developed the web-side architecture around React, Supabase Auth/PostgreSQL with RLS, and Netlify Functions. One important lesson was that database permissions and row-level security solve different problems: our dashboard initially failed because table privileges were missing even though the tables existed. The web prototype is deployed, while GPS/BLE and the physical pillbox workflow still require end-to-end testing. My next goal is to validate the device gateway and safety checks with repeatable tests.”
+“GeoWrisX AD is a student R&D prototype exploring a dual-safety workflow for Alzheimer's caregiving. I developed the web-side architecture around React, Supabase Auth/PostgreSQL with RLS, and Cloudflare Pages Functions. One important lesson was that database permissions and row-level security solve different problems: our dashboard initially failed because table privileges were missing even though the tables existed. The web prototype is deployed, while GPS/BLE and the physical pillbox workflow still require end-to-end testing. My next goal is to validate the device gateway and safety checks with repeatable tests.”
 
 Personalize the “I developed” statement to match your actual role and the work you can demonstrate.
 
